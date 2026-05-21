@@ -85,15 +85,15 @@
 
 ## 元数据抓取（P0 示例）
 
-- 映射明细表：`/home/runner/work/guji-resource-index/guji-resource-index/docs/p0_metadata_mapping.md`
-- 来源配置模板：`/home/runner/work/guji-resource-index/guji-resource-index/configs/p0_sources.template.json`
-- 抓取脚本：`/home/runner/work/guji-resource-index/guji-resource-index/scripts/fetch_metadata.py`
+- 映射明细表：`docs/p0_metadata_mapping.md`
+- 来源配置模板：`configs/p0_sources.template.json`
+- 抓取脚本：`scripts/fetch_metadata.py`
 
 示例：
 
 ```bash
-python /home/runner/work/guji-resource-index/guji-resource-index/scripts/fetch_metadata.py \
-  --config /home/runner/work/guji-resource-index/guji-resource-index/configs/p0_sources.template.json \
+python scripts/fetch_metadata.py \
+  --config configs/p0_sources.template.json \
   --source harvard_rare_books \
   --param record_id=49-990080724750203941 \
   --pretty
