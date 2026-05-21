@@ -203,7 +203,7 @@ def main() -> int:
         else:
             print(json.dumps(result, ensure_ascii=False))
         return 0
-    except Exception as e:  # noqa: BLE001
+    except Exception as e:
         print(f"[ERROR] {e}", file=sys.stderr)
         print(traceback.format_exc(), file=sys.stderr)
         return 1

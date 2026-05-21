@@ -171,7 +171,6 @@
       "mappings": {
         "title": {
           "from": "first_non_empty",
-          "note": "candidates 可混用字符串路径与提取对象规格（metadata_label 等）。",
           "candidates": ["label", {"from": "metadata_label", "path": "metadata", "label": "Title"}]
         },
         "author": {
