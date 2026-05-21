@@ -140,7 +140,10 @@ def extract_value(spec: Any, payload: Any) -> Any:
         if not isinstance(payload, str):
             return None
         pattern = spec.get("pattern", "")
-        group = int(spec.get("group", 1))
+        try:
+            group = int(spec.get("group", 1))
+        except (TypeError, ValueError) as e:
+            raise ValueError(f"invalid regex group in mapping spec: {spec}") from e
         return extract_regex(payload, pattern, group=group)
 
     if from_type == "path":
