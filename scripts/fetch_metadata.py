@@ -90,7 +90,7 @@ def get_by_path(data: Any, path: str) -> Any:
     cur = data
     for token in parse_path_segments(path):
         if isinstance(token, int):
-            if not isinstance(cur, list) or token >= len(cur):
+            if not isinstance(cur, list) or token < 0 or token >= len(cur):
                 return None
             cur = cur[token]
             continue

@@ -1,6 +1,10 @@
 {
   "user_agent": "guji-resource-index-metadata-crawler/1.0",
   "timeout_seconds": 30,
+  "notes": {
+    "regex_mapping": "html regex 用于与现有网站文档中的提取规则保持一致；复杂站点建议后续切换 HTML 解析器。",
+    "first_non_empty_candidates": "candidates 支持两类：字符串路径（如 metadata.title）或完整提取规格对象（如 metadata_label）。"
+  },
   "sources": [
     {
       "id": "nlc_read",
