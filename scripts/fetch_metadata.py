@@ -163,9 +163,15 @@ def extract_value(spec: Any, payload: Any) -> Any:
 
 
 def run(source: Dict[str, Any], conf: Dict[str, Any], params: Dict[str, str]) -> Dict[str, Any]:
-    url = source["url_template"].format(**params)
+    url_template = source.get("url_template")
+    if not isinstance(url_template, str) or not url_template:
+        raise ValueError(f"invalid or missing url_template in source config: {source.get('id')}")
+    url = url_template.format(**params)
     ua = conf.get("user_agent", "metadata-crawler/1.0")
-    timeout = int(conf.get("timeout_seconds", 30))
+    try:
+        timeout = int(conf.get("timeout_seconds", 30))
+    except (TypeError, ValueError) as e:
+        raise ValueError(f"invalid timeout_seconds in config: {conf.get('timeout_seconds')}") from e
     raw = http_get(url, ua, timeout)
     payload = parse_response(raw, source.get("response_type", "json"))
 
