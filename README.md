@@ -82,3 +82,19 @@
 |[俄罗斯国家图书馆（NLR）](websites/俄罗斯国家图书馆.md) [🔗](https://nlr.ru/) |圣彼得堡历史最悠久的俄罗斯国家图书馆，馆藏超3700万件 | 数字化资源公开访问 | 手动下载 |
 |[越南汉喃古籍文献典藏数位化计划](websites/越南汉喃古籍文献.md) [🔗](https://lib.nomfoundation.org/) |越南喃字保存基金会与越南国家图书馆合作的汉喃古籍数字图书馆 | 免费访问 | 图片直接下载 |
 |[越南国家图书馆汉喃古籍](websites/越南国家图书馆.md) [🔗](http://hannom.nlv.gov.vn/) |越南国家图书馆建设的汉喃古籍在线数字图书馆 | 免费访问 | bookget |
+
+## 元数据抓取（P0 示例）
+
+- 映射明细表：`/home/runner/work/guji-resource-index/guji-resource-index/docs/p0_metadata_mapping.md`
+- 来源配置模板：`/home/runner/work/guji-resource-index/guji-resource-index/configs/p0_sources.template.json`
+- 抓取脚本：`/home/runner/work/guji-resource-index/guji-resource-index/scripts/fetch_metadata.py`
+
+示例：
+
+```bash
+python /home/runner/work/guji-resource-index/guji-resource-index/scripts/fetch_metadata.py \
+  --config /home/runner/work/guji-resource-index/guji-resource-index/configs/p0_sources.template.json \
+  --source harvard_rare_books \
+  --param record_id=49-990080724750203941 \
+  --pretty
+```

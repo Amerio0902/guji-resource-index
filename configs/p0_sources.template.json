@@ -1,0 +1,186 @@
+{
+  "user_agent": "guji-resource-index-metadata-crawler/1.0",
+  "timeout_seconds": 30,
+  "sources": [
+    {
+      "id": "nlc_read",
+      "name": "中国国家图书馆",
+      "response_type": "html",
+      "url_template": "http://read.nlc.cn/allSearch/searchDetail?searchType=1002&showType=1&indexName=data_{aid}&fid={fid}",
+      "required_params": ["aid", "fid"],
+      "mappings": {
+        "title": {
+          "from": "regex",
+          "pattern": "<input[^>]+id=\"title\"[^>]+value=\"([^\"]*)\"",
+          "group": 1
+        },
+        "author": {
+          "from": "regex",
+          "pattern": "<input[^>]+id=\"author\"[^>]+value=\"([^\"]*)\"",
+          "group": 1
+        },
+        "date": {
+          "from": "regex",
+          "pattern": "<span class=\"tt\">\\s*出版发行项：\\s*</span><span class=\"t1\">([^<]*)</span>",
+          "group": 1
+        },
+        "publisher": {
+          "from": "regex",
+          "pattern": "<span class=\"tt\">\\s*出版发行项：\\s*</span><span class=\"t1\">([^<]*)</span>",
+          "group": 1
+        },
+        "license": {
+          "from": "const",
+          "value": "免费开放·禁止商用·禁止批量下载"
+        }
+      }
+    },
+    {
+      "id": "harvard_rare_books",
+      "name": "哈佛大学图书馆 Chinese Rare Books",
+      "response_type": "json",
+      "url_template": "https://curiosity.lib.harvard.edu/chinese-rare-books/catalog/{record_id}.json",
+      "required_params": ["record_id"],
+      "mappings": {
+        "title": "data.attributes.title",
+        "author": "data.attributes.creator-contributor_tesim.attributes.value",
+        "date": "data.attributes.date_ssim.attributes.value",
+        "publisher": "data.attributes.publisher_ssim.attributes.value",
+        "license": {
+          "from": "const",
+          "value": "CC BY 4.0"
+        }
+      }
+    },
+    {
+      "id": "ndl_item",
+      "name": "国立国会图书馆 Item API",
+      "response_type": "json",
+      "url_template": "https://dl.ndl.go.jp/api/item/search/info:ndljp/pid/{book_id}",
+      "required_params": ["book_id"],
+      "mappings": {
+        "title": "item.meta.0311Dtct[0]",
+        "author": "item.meta.0010Dtct[0]",
+        "date": "item.meta.0058Dod[0]",
+        "publisher": "item.meta.0058Dod[0]",
+        "license": "item.rights.code"
+      }
+    },
+    {
+      "id": "internet_archive_metadata",
+      "name": "Internet Archive Metadata API",
+      "response_type": "json",
+      "url_template": "https://archive.org/metadata/{identifier}",
+      "required_params": ["identifier"],
+      "mappings": {
+        "title": "metadata.title",
+        "author": "metadata.creator",
+        "date": {
+          "from": "first_non_empty",
+          "candidates": ["metadata.date", "metadata.year"]
+        },
+        "publisher": "metadata.publisher",
+        "license": "metadata.licenseurl"
+      }
+    },
+    {
+      "id": "ctext_gettext",
+      "name": "中国哲学书电子化计划",
+      "response_type": "json",
+      "url_template": "https://api.ctext.org/gettext?urn={urn}&if={lang}",
+      "required_params": ["urn", "lang"],
+      "mappings": {
+        "title": "title",
+        "author": {
+          "from": "const",
+          "value": null
+        },
+        "date": {
+          "from": "const",
+          "value": null
+        },
+        "publisher": {
+          "from": "const",
+          "value": "中國哲學書電子化計劃"
+        },
+        "license": {
+          "from": "const",
+          "value": "站点规则为准"
+        }
+      }
+    },
+    {
+      "id": "ouroots_catalog_volume",
+      "name": "中华寻根网",
+      "response_type": "json",
+      "url_template": "http://dsnode.ouroots.nlc.cn/gtService/data/catalogVolume?bookId={book_id}",
+      "required_params": ["book_id"],
+      "mappings": {
+        "title": {
+          "from": "first_non_empty",
+          "candidates": ["data[0].bookName", "bookName"]
+        },
+        "author": {
+          "from": "first_non_empty",
+          "candidates": ["data[0].author", "author"]
+        },
+        "date": {
+          "from": "first_non_empty",
+          "candidates": ["data[0].publishDate", "publishDate"]
+        },
+        "publisher": {
+          "from": "first_non_empty",
+          "candidates": ["data[0].publisher", "publisher"]
+        },
+        "license": {
+          "from": "const",
+          "value": "免费开放浏览"
+        }
+      }
+    },
+    {
+      "id": "wzlib_resource",
+      "name": "温州市图书馆",
+      "response_type": "json",
+      "url_template": "https://oyjy.wzlib.cn/api/search/v1/resource/{book_id}",
+      "required_params": ["book_id"],
+      "mappings": {
+        "title": {
+          "from": "first_non_empty",
+          "candidates": ["title", "resourceName"]
+        },
+        "author": "author",
+        "date": "publishDate",
+        "publisher": "publisher",
+        "license": {
+          "from": "const",
+          "value": "站点规则为准"
+        }
+      }
+    },
+    {
+      "id": "kokusho_manifest",
+      "name": "国書データベース",
+      "response_type": "json",
+      "url_template": "https://kokusho.nijl.ac.jp/biblio/{biblio_id}/manifest",
+      "required_params": ["biblio_id"],
+      "mappings": {
+        "title": {
+          "from": "first_non_empty",
+          "candidates": ["label", {"from": "metadata_label", "path": "metadata", "label": "Title"}]
+        },
+        "author": {
+          "from": "metadata_label",
+          "path": "metadata",
+          "label": "Author"
+        },
+        "date": {
+          "from": "const",
+          "value": null
+        },
+        "publisher": "attribution",
+        "license": "license"
+      }
+    }
+  ]
+}
