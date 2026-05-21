@@ -86,7 +86,7 @@ def parse_path_segments(path: str) -> List[Union[str, int]]:
     return tokens
 
 
-def get_by_path(data: Any, path: str) -> Any:
+def get_by_path(data: Any, path: str) -> Optional[Any]:
     cur = data
     for token in parse_path_segments(path):
         if isinstance(token, int):
@@ -100,7 +100,7 @@ def get_by_path(data: Any, path: str) -> Any:
     return cur
 
 
-def metadata_label_value(data: Any, path: str, label: str) -> Any:
+def metadata_label_value(data: Any, path: str, label: str) -> Optional[Any]:
     arr = get_by_path(data, path)
     if not isinstance(arr, list):
         return None
@@ -112,7 +112,7 @@ def metadata_label_value(data: Any, path: str, label: str) -> Any:
     return None
 
 
-def extract_regex(text: str, pattern: str, group: int = 1) -> Any:
+def extract_regex(text: str, pattern: str, group: int = 1) -> Optional[str]:
     try:
         m = re.search(pattern, text, re.IGNORECASE | re.DOTALL)
     except re.error as e:
@@ -125,7 +125,7 @@ def extract_regex(text: str, pattern: str, group: int = 1) -> Any:
         raise ValueError(f"regex group {group} not found for pattern: {pattern}") from e
 
 
-def extract_value(spec: Any, payload: Any) -> Any:
+def extract_value(spec: Union[str, Dict[str, Any]], payload: Any) -> Optional[Any]:
     if isinstance(spec, str):
         return get_by_path(payload, spec)
 
