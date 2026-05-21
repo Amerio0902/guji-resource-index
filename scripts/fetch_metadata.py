@@ -3,6 +3,8 @@ import argparse
 import json
 import re
 import sys
+import traceback
+import urllib.error
 import urllib.request
 from typing import Any, Dict, List, Optional, Union
 
@@ -52,8 +54,13 @@ def ensure_required_params(source: Dict[str, Any], params: Dict[str, str]) -> No
 
 def http_get(url: str, ua: str, timeout: int) -> str:
     req = urllib.request.Request(url, headers={"User-Agent": ua})
-    with urllib.request.urlopen(req, timeout=timeout) as resp:
-        return resp.read().decode("utf-8", errors="replace")
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as resp:
+            return resp.read().decode("utf-8", errors="replace")
+    except urllib.error.HTTPError as e:
+        raise RuntimeError(f"HTTP error {e.code} for URL: {url}") from e
+    except urllib.error.URLError as e:
+        raise RuntimeError(f"Network error for URL: {url}: {e.reason}") from e
 
 
 def parse_response(raw: str, response_type: str) -> Union[str, Dict[str, Any], List[Any]]:
@@ -106,10 +113,16 @@ def metadata_label_value(data: Any, path: str, label: str) -> Any:
 
 
 def extract_regex(text: str, pattern: str, group: int = 1) -> Any:
-    m = re.search(pattern, text, re.IGNORECASE | re.DOTALL)
+    try:
+        m = re.search(pattern, text, re.IGNORECASE | re.DOTALL)
+    except re.error as e:
+        raise ValueError(f"invalid regex pattern: {pattern}") from e
     if not m:
         return None
-    return m.group(group).strip()
+    try:
+        return m.group(group).strip()
+    except IndexError as e:
+        raise ValueError(f"regex group {group} not found for pattern: {pattern}") from e
 
 
 def extract_value(spec: Any, payload: Any) -> Any:
@@ -183,6 +196,7 @@ def main() -> int:
         return 0
     except Exception as e:  # noqa: BLE001
         print(f"[ERROR] {e}", file=sys.stderr)
+        print(traceback.format_exc(), file=sys.stderr)
         return 1
 
 

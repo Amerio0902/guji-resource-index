@@ -11,12 +11,12 @@
       "mappings": {
         "title": {
           "from": "regex",
-          "pattern": "<input[^>]+id=\"title\"[^>]+value=\"([^\"]*)\"",
+          "pattern": "<input[^>]+id=\"title\"[^>]+value=\"([^\"\\\\]*(?:\\\\.[^\"\\\\]*)*)\"",
           "group": 1
         },
         "author": {
           "from": "regex",
-          "pattern": "<input[^>]+id=\"author\"[^>]+value=\"([^\"]*)\"",
+          "pattern": "<input[^>]+id=\"author\"[^>]+value=\"([^\"\\\\]*(?:\\\\.[^\"\\\\]*)*)\"",
           "group": 1
         },
         "date": {
